@@ -1,7 +1,6 @@
 package model.dao.implement;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -94,7 +93,27 @@ public class SellerDaoJDBC implements SellerDao {
 
 	@Override
 	public void deleteById(Integer id) {
-		// TODO Auto-generated method stub
+		PreparedStatement st = null;
+		
+		try {
+			st = conn.prepareStatement("DELETE FROM seller "
+					  				 + "WHERE Id = ? ");
+			
+			st.setInt(1, id);
+			//se rowsAffected = 0 -> id não existe
+			int rowsAffected = st.executeUpdate();
+			
+			if (rowsAffected == 0) {
+				System.out.println("Id not exists");
+			} else {
+				System.out.println("Delete completed");
+			}
+			
+		} catch(SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(st);
+		}
 		
 	}
 
