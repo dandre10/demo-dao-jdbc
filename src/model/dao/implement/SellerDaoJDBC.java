@@ -54,19 +54,9 @@ public class SellerDaoJDBC implements SellerDao {
 			//verificar se o rs tem algum retorno
 			if (rs.next()) {
 				//criando objetos a partir do resultset - IMPORTANTE
-				Department dep = new Department();
-				dep.setId(rs.getInt("DepartmentId")); //pega o id do campo DepartmentId no resultset
-				dep.setName(rs.getString("DepName"));
+				Department dep = instantiateDepartment(rs);
 				
-				Seller seller = new Seller();
-				seller.setId(rs.getInt("Id"));
-				seller.setName(rs.getString("Name"));
-				seller.setEmail(rs.getString("Email"));
-				seller.setBirthDate(rs.getDate("BirthDate"));
-				seller.setBaseSalary(rs.getDouble("BaseSalary"));
-				
-				//associação da tabela vendedor com o departamento
-				seller.setDepartment(dep);
+				Seller seller = instantiateSeller(rs, dep);
 				
 				return seller;
 				
@@ -81,6 +71,29 @@ public class SellerDaoJDBC implements SellerDao {
 			DB.closeResultSet(rs);
 		}
 	}
+
+	private Seller instantiateSeller(ResultSet rs, Department dep) throws SQLException {
+		Seller seller = new Seller();
+		seller.setId(rs.getInt("Id"));
+		seller.setName(rs.getString("Name"));
+		seller.setEmail(rs.getString("Email"));
+		seller.setBirthDate(rs.getDate("BirthDate"));
+		seller.setBaseSalary(rs.getDouble("BaseSalary"));
+		
+		//associação da tabela vendedor com o departamento
+		seller.setDepartment(dep);
+		
+		return seller;
+	}
+
+
+	private Department instantiateDepartment(ResultSet rs) throws SQLException {
+		Department dep = new Department();
+		dep.setId(rs.getInt("DepartmentId")); //pega o id do campo DepartmentId no resultset
+		dep.setName(rs.getString("DepName"));
+		return dep;
+	}
+
 
 	@Override
 	public List<Seller> findAll() {
